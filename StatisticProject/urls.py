@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from main.views import result
+from main.views import result, questionnaire, submit_ratings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', result, name='result'),
+    path('questionnaire/', questionnaire, name='questionnaire'),
+    path('questionnaire/submit_ratings', submit_ratings, name='submit_ratings'),
 ]

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <h4>{{ prepod.name}}</h4>
+    <p class="text-secondary">По шкале от 1 до 5 оцените преподавателя по следущим вопросам:</p>
+    <br><br>
+    <form method="POST" action="{% url 'submit_ratings' %}">
+        {% csrf_token %}
+        {% for question in questions %}
+        <section class="row">
+            <h6 class="col-5">{{ question.title }}</h6>
+            <div class="col-6">
+                <div class="star-rating" data-rating-id="{{ question.id }}">
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                    <input type="hidden" name="rating_{{ question.id }}" value="0">
+                    <span class="rating-value ms-2" style="display: none;">0</span>
+                </div>
+            </div>
+        </section>
+       <input type="hidden" name="prepod_id" value="{{ prepod.id }}">
+        <div class="col-8">
+            <hr>
+        </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn btn-primary">Отправить оценки</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ratings = document.querySelectorAll('.star-rating');
+
+            ratings.forEach(rating => {
+                const stars = rating.querySelectorAll('.star');
+                const ratingValue = rating.querySelector('.rating-value');
+                const hiddenInput = rating.querySelector('input');
+                let selectedRating = 0;
+
+                stars.forEach(star => {
+                    // Наведение на звезду
+                    star.addEventListener('mouseover', function () {
+                        const value = this.getAttribute('data-value');
+                        highlightStars(stars, value);
+                    });
+
+                    // Убираем подсветку при уходе мыши
+                    star.addEventListener('mouseout', function () {
+                        highlightStars(stars, selectedRating);
+                    });
+
+                    // Клик по звезде
+                    star.addEventListener('click', function () {
+                        selectedRating = this.getAttribute('data-value');
+                        highlightStars(stars, selectedRating);
+
+                        // Обновляем скрытое значение для отправки формы
+                        hiddenInput.value = selectedRating;
+                        // Показать рейтинг только после выбора
+                        ratingValue.textContent = selectedRating;
+                        ratingValue.style.display = 'inline-block';
+                    });
+                });
+
+                // Подсветка звезд до указанного значения
+                function highlightStars(stars, value) {
+                    stars.forEach(star => {
+                        if (star.getAttribute('data-value') <= value) {
+                            star.classList.add('hovered');
+                        } else {
+                            star.classList.remove('hovered');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .star {
+            font-size: 2rem;
+            color: lightgray;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .star.hovered {
+            color: gold;
+        }
+    </style>
+{% endblock %}
