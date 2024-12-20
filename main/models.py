@@ -4,6 +4,10 @@ class Prepod(models.Model):
     name = models.CharField(max_length=100)
     photo = models.ImageField(upload_to='prepod_photos/', null=True, blank=True)
 
+    # Добавим поля для более детального описания
+    bio = models.TextField(null=True, blank=True)  # Биография преподавателя
+    department = models.CharField(max_length=100, null=True, blank=True)  # Отдел или кафедра
+
     def __str__(self):
         return self.name
 
