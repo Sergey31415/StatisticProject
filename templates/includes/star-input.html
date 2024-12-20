@@ -1,0 +1,55 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const initStarRatings = () => {
+            const ratings = document.querySelectorAll('.star-rating');
+
+            ratings.forEach(rating => {
+                const stars = rating.querySelectorAll('.star');
+                const ratingValue = rating.querySelector('.rating-value');
+                const hiddenInput = rating.querySelector('input');
+                let selectedRating = 0;
+
+                stars.forEach(star => {
+                    // Наведение на звезду
+                    star.addEventListener('mouseover', function () {
+                        const value = this.getAttribute('data-value');
+                        highlightStars(stars, value);
+                    });
+
+                    // Убираем подсветку при уходе мыши
+                    star.addEventListener('mouseout', function () {
+                        highlightStars(stars, selectedRating);
+                    });
+
+                    // Клик по звезде
+                    star.addEventListener('click', function () {
+                        selectedRating = this.getAttribute('data-value');
+                        highlightStars(stars, selectedRating);
+
+                        // Обновляем скрытое значение для отправки формы
+                        hiddenInput.value = selectedRating;
+                        // Показать рейтинг только после выбора
+                        if (ratingValue) {
+                            ratingValue.textContent = selectedRating;
+                            ratingValue.style.display = 'inline-block';
+                        }
+                    });
+                });
+
+                // Подсветка звезд до указанного значения
+                const highlightStars = (stars, value) => {
+                    stars.forEach(star => {
+                        if (star.getAttribute('data-value') <= value) {
+                            star.classList.add('hovered');
+                        } else {
+                            star.classList.remove('hovered');
+                        }
+                    });
+                };
+            });
+        };
+
+        // Инициализация
+        initStarRatings();
+    });
+</script>

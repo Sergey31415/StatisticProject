@@ -1,0 +1,49 @@
+<div class="star-display" data-rating="{{ rating }}">
+    <span class="star">&#9733;</span>
+    <span class="star">&#9733;</span>
+    <span class="star">&#9733;</span>
+    <span class="star">&#9733;</span>
+    <span class="star">&#9733;</span>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const displays = document.querySelectorAll('.star-display');
+
+        displays.forEach(display => {
+            const rating = parseFloat(display.getAttribute('data-rating')); // Получаем значение рейтинга
+            const stars = display.querySelectorAll('.star');
+
+            stars.forEach((star, index) => {
+                const starValue = index + 1;
+
+                if (rating >= starValue) {
+                    // Полная звезда
+                    star.style.color = 'gold';
+                } else if (rating > starValue - 1) {
+                    // Дробная звезда (закрашиваем частично)
+                    const fraction = rating - (starValue - 1); // Вычисляем долю
+                    star.style.color = `rgba(255, 215, 0, ${fraction})`;
+                } else {
+                    // Пустая звезда
+                    star.style.color = 'lightgray';
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    
+    .star-display {
+        display: inline-flex; /* Устанавливает звезды в строку */
+       
+        gap: 0.2rem; /* Расстояние между звездами */
+    }
+    
+    .star {
+        font-size: 2rem;
+        color: lightgray;
+        transition: color 0.2s ease;
+    }
+</style>

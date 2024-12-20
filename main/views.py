@@ -28,20 +28,36 @@ def submit_ratings(request):
         return HttpResponse("Спасибо за ваши ответы!")
     return redirect('result')  # Или какая-то другая страница
 
+
+from django.db.models import Count, Avg
+
+
 def result(request):
-    # Получаем среднее арифметическое по каждому вопросу для преподавателя с ID 1, используя заголовок (title) вопроса
+    # Получаем среднее арифметическое по каждому вопросу для преподавателя с ID из запроса
     average_answers = Answer.objects.filter(prepod_id=request.GET.get('prepod')) \
-        .values('question__title')  # Получаем заголовок вопросов (question__title)
+        .values('question__title', 'question_id')  # Получаем заголовок вопросов и их ID
 
     # Аггрегируем среднее значение для каждого вопроса
-    average_answers = average_answers.annotate(avg_answer=Avg('answer'))
+    average_answers = average_answers.annotate(
+        avg_answer=Avg('answer'),  # Средний рейтинг для каждого вопроса
+    )
 
+    prepod_name = Prepod.objects.get(id=request.GET.get('prepod')).name
     result = []
-    # Выводим результат
+
+    # Выводим результат, включая количество проголосовавших
     for group in average_answers:
         question_text = group['question__title']
+        question_id = group['question_id']  # ID вопроса
         avg_answer = group['avg_answer']
-        ounded_avg_answer = round(avg_answer, 1)
-        result.append([f"{question_text}, {ounded_avg_answer}"])
+        rounded_avg_answer = round(avg_answer, 1)
 
-    return render(request, 'result.html', {'text': result})
+        # Подсчитываем количество проголосовавших для данного вопроса
+        voters_count = Answer.objects.filter(question_id=question_id).count()
+
+        result.append({
+            "question_title": question_text,
+            "average_rating": rounded_avg_answer
+        })
+
+    return render(request, 'result.html', {'result': result, 'prepod_name': prepod_name, "voters_count": voters_count})

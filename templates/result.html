@@ -1,6 +1,14 @@
-{% for el in text %}
-    {% for ll in el %}
-        {{ ll }}    <br>
-    {% endfor %}
-{% endfor %}
+{% extends 'base.html' %}
 
+{% block main %}
+    <h4>Результаты опроса по преподавателю: {{ prepod_name }}</h4>
+    <i class="p-2">( На основе {{ voters_count }} голосов) </i> <br>
+    <hr>
+    {% for el in result %}
+       <span class="m-2">{{ el.question_title }}</span>
+       {% include 'includes/star-display.html' with rating=el.average_rating %} {{ el.average_rating }}  <br>
+
+    {% endfor %}
+
+
+{% endblock %}
