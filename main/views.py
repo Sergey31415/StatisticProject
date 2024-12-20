@@ -1,10 +1,16 @@
 from collections import defaultdict
 
-from django.db.models import Avg
+from django.db.models import Q
+
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from main.models import Answer, Question, Prepod
+from main import models
+from main.models import Answer, Question, Prepod, QuestionCategory
+
+from django.db.models import Q
+
 
 
 def questionnaire(request):
@@ -60,7 +66,22 @@ def result(request):
             "voters_count": voters_count,  # Добавляем количество проголосовавших для каждого вопроса
         })
 
-    return render(request, 'result.html', {'result': result, 'prepod_name': prepod_name, 'prepod': prepod})
+
+    # Фильтруем категории с учетом только ответов данного преподавателя
+    categories_with_avg = QuestionCategory.objects.annotate(
+        average_score=Avg(
+            'question__answer__answer',
+            filter=Q(question__answer__prepod=prepod)  # Исправлено на Q
+        )
+    ).filter(
+        question__answer__prepod=prepod
+    ).distinct()
+
+    # Преобразуем QuerySet в список словарей
+    categories_data = list(categories_with_avg.values('title', 'average_score'))
+
+
+    return render(request, 'result.html', {'result': result, 'prepod_name': prepod_name, 'prepod': prepod, 'categories_data': categories_data})
 
 
 

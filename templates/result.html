@@ -1,23 +1,110 @@
 {% extends 'base.html' %}
 
 {% block main %}
+<div class="container">
     <div class="row">
         <div class="col-md-8">
             <h4>Результаты опроса по преподавателю: {{ prepod_name }}</h4>
+            <p>{{ prepod.bio }}</p>
+            <i>Департамент: {{ prepod.department }}</i>
         </div>
-        <div class="col-md-4">
-             {% if prepod.photo and prepod.photo.url %}
-                <img src="{{ prepod.photo.url }}" alt="Фото преподавателя" width="150">
+        <div class="col-md-4 text-center">
+            {% if prepod.photo and prepod.photo.url %}
+                <img src="{{ prepod.photo.url }}" alt="Фото преподавателя" class="img-thumbnail" width="150">
             {% else %}
-                <p>No photo</p>
+                <p class="text-muted">Нет фото</p>
             {% endif %}
         </div>
     </div>
 
+    <hr class="hr">
+
+    <div class="row">
+        <div class="col-md-6">
+            <h5>Результаты по вопросам</h5>
+            {% for el in result %}
+                <span class="m-2">{{ el.question_title }}</span>
+                <i>({{ el.voters_count }} голосов)</i>
+                {% include 'includes/star-display.html' with rating=el.average_rating %}
+                {{ el.average_rating }} <br>
+            {% endfor %}
+        </div>
+        <div class="col-md-6">
+
+            <div style="width: 100%; max-width: 600px;">
+                <canvas id="myRadarChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+
     <hr>
-    {% for el in result %}
-       <span class="m-2">{{ el.question_title }}</span>
-        <i>({{ el.voters_count }} голосов)</i>
-       {% include 'includes/star-display.html' with rating=el.average_rating %} {{ el.average_rating }} <br>
-    {% endfor %}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    // Данные категорий
+    const categoriesData = {{ categories_data|safe }};
+    const questionCategories = categoriesData.map(category => category.title || "");
+    const scores = categoriesData.map(category => category.average_score || 0);
+
+    // Цвета для точек в зависимости от оценки
+    const zoneColors = scores.map(score => {
+        if (score >= 4.5) return 'rgba(0, 128, 0, 0.6)';
+        if (score >= 3.5) return 'rgba(0, 255, 0, 0.6)';
+        if (score >= 2.5) return 'rgba(255, 255, 0, 0.6)';
+        if (score >= 1.5) return 'rgba(255, 165, 0, 0.6)';
+        return 'rgba(255, 0, 0, 0.6)';
+    });
+
+    // Инициализация графика
+    const ctx = document.getElementById('myRadarChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: questionCategories,
+            datasets: [{
+                data: scores, // Убираем label
+                backgroundColor: 'rgba(79, 129, 189, 0.2)',
+                borderColor: 'rgba(79, 129, 189, 1)',
+                borderWidth: 1,
+                pointBackgroundColor: zoneColors
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false } // Отключаем легенду
+            },
+            scales: {
+                r: {
+                    min: 1,
+                    max: 5,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            switch(value) {
+                                case 1: return "Очень плохо";
+                                case 2: return "Плохо";
+                                case 3: return "Средне";
+                                case 4: return "Хорошо";
+                                case 5: return "Отлично";
+                                default: return value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<style>
+    .img-thumbnail{
+        border-radius:150px;
+    }
+
+    .hr {
+        width: 70%;
+    }
+
+</style>
+</div>
 {% endblock %}
