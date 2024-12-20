@@ -1,7 +1,68 @@
 {% extends 'base.html' %}
 
 {% block main %}
-{% for prepod in prepods %}
-    {{ prepod }} <a href="{% url 'result' %}?prepod={{ prepod.id }}">Voice</a> <br>
-{% endfor %}
+
+
+    <ul class="list-group">
+        {% for prepod in prepods %}
+            <li class="list-group-item"><a class="btn btn-outline-info btn-sm" href="{% url 'questionnaire' %}?prepod={{ prepod.id }}">Voice</a> {{ prepod }} <br></li>
+        {% endfor %}
+
+
+    </ul> <br><br>
+    <div class="castom-line" ><hr></div>
+    <h2 class="text-center">The Best</h2><br><br>
+    <div class="row prepod-container">
+        {% for prepod in prepods %}
+            <a class="col" href="{% url 'result' %}?prepod={{ prepod.id }}">
+                    {% if prepod.photo and prepod.photo.url %}
+                        <img class="photo-container" src="{{ prepod.photo.url }}" alt="Фото преподавателя" width="250">
+                    {% else %}
+                        <div class="photo-container">No photo</div>
+                    {% endif %}
+                    <h5 class="text-center">{{ prepod.name }}</h5>
+                    <div class="star-rating text-center">
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="2">&#9733;</span>
+                        <span class="star" data-value="3">&#9733;</span>
+                        <span class="star" data-value="4">&#9733;</span>
+                        <span class="star" data-value="5">&#9733;</span>
+                    </div>
+            </a>
+        {% endfor %}
+    </div>
+
+
+    <style>
+        .photo-container {
+            width: 250px;
+            height: 250px;
+            border-radius:150px;
+            margin-left: 20%;
+        }
+
+        .photo-container:hover,
+        .photo-container:focus {
+            width: 260px;
+            height: 260px;
+            border-radius:150px;
+            margin-left: 19%;
+        }
+
+        .photo-container {
+            transition: all 0.5s ease;  /* Smooth transition for all properties */
+        }
+
+
+        .prepod-container h5 {
+
+        }
+
+        .castom-line {
+            width: 50%;
+            margin-left: 25%;
+        }
+
+
+    </style>
 {% endblock %}

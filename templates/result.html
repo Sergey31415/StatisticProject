@@ -4,7 +4,6 @@
     <div class="row">
         <div class="col-md-8">
             <h4>Результаты опроса по преподавателю: {{ prepod_name }}</h4>
-            <i class="p-2">( На основе {{ voters_count }} голосов) </i> <br>
         </div>
         <div class="col-md-4">
              {% if prepod.photo and prepod.photo.url %}
@@ -18,8 +17,7 @@
     <hr>
     {% for el in result %}
        <span class="m-2">{{ el.question_title }}</span>
-       {% include 'includes/star-display.html' with rating=el.average_rating %} {{ el.average_rating }}  <br>
-
+        <i>({{ el.voters_count }} голосов)</i>
+       {% include 'includes/star-display.html' with rating=el.average_rating %} {{ el.average_rating }} <br>
     {% endfor %}
-
 {% endblock %}

@@ -24,9 +24,7 @@ def submit_ratings(request):
             Answer.objects.create(question=question, prepod=prepod, answer=int(rating))
             print(f"Rating for {question.id}: {rating}")
 
-        # Перенаправляем пользователя после отправки
-        return HttpResponse("Спасибо за ваши ответы!")
-    return redirect('result')  # Или какая-то другая страница
+    return redirect('home')  # Или какая-то другая страница
 
 
 from django.db.models import Count, Avg
@@ -59,10 +57,11 @@ def result(request):
         result.append({
             "question_title": question_text,
             "average_rating": rounded_avg_answer,
-            "voters_count": voters_count  # Добавляем количество проголосовавших
+            "voters_count": voters_count,  # Добавляем количество проголосовавших для каждого вопроса
         })
 
     return render(request, 'result.html', {'result': result, 'prepod_name': prepod_name, 'prepod': prepod})
+
 
 
 def home(request):
