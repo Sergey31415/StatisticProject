@@ -10,7 +10,7 @@
         </div>
         <div class="col-md-4 text-center">
             {% if prepod.photo and prepod.photo.url %}
-                <img src="{{ prepod.photo.url }}" alt="Фото преподавателя" class="img-thumbnail" width="150">
+                <img src="{{ prepod.photo.url }}" alt="Фото преподавателя" class="img-thumbnail prepod-photo" width="150">
             {% else %}
                 <p class="text-muted">Нет фото</p>
             {% endif %}
@@ -31,8 +31,8 @@
         </div>
         <div class="col-md-6">
 
-            <div style="width: 100%; max-width: 600px;">
-                <canvas id="myRadarChart" width="400" height="400"></canvas>
+            <div class="graph-container">
+                <canvas id="myRadarChart"></canvas>
             </div>
         </div>
     </div>
@@ -118,6 +118,28 @@
     .hr {
         width: 70%;
     }
+
+    .prepod-photo:hover,
+    .prepod-photo:focus {
+        width: 190px;
+        border: 5px solid rgba(13, 110, 253, 0.3);
+    }
+
+    .prepod-photo {
+            transition: all 0.5s ease;  /* Smooth transition for all properties */
+        }
+
+.graph-container {
+    transition: transform 0.5s ease, width 0.1s ease;
+    width: 100%;
+    //overflow: hidden;  /* To prevent the chart from overflowing */
+    //background-color: rgba(255, 255, 255, 0.4);
+}
+
+.graph-container:hover {
+    transform: scale(1.1);  /* Increases the size of the graph on hover */
+    width: 100%;  /* Ensure the container width stays the same */
+}
 
 </style>
 </div>
