@@ -11,15 +11,24 @@ class Prepod(models.Model):
     def __str__(self):
         return self.name
 
-class QuestionnaireItem(models.Model):
+
+class QuestionCategory(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+class Question(models.Model):
     title = models.CharField(max_length=150)
+    category = models.ForeignKey(QuestionCategory, on_delete=models.CASCADE)  # Для какой категории
 
     def __str__(self):
         return self.title
 
 class Answer(models.Model):
     prepod = models.ForeignKey(Prepod, on_delete=models.CASCADE)
-    question = models.ForeignKey(QuestionnaireItem, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.IntegerField()
 
     def __str__(self):
