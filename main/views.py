@@ -4,11 +4,11 @@ from django.db.models import Avg
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from main.models import Answer, Questions, Prepod
+from main.models import Answer, QuestionnaireItem, Prepod
 
 
 def questionnaire(request):
-    questions = Questions.objects.all()
+    questions = QuestionnaireItem.objects.all()
     prepod_id = request.GET.get('prepod')
     prepod = Prepod.objects.get(pk=prepod_id)
     context = {'prepod': prepod, 'questions': questions}
@@ -17,7 +17,7 @@ def questionnaire(request):
 def submit_ratings(request):
     if request.method == 'POST':
         # Сохраняем рейтинги для каждого вопроса
-        questions = Questions.objects.all()
+        questions = QuestionnaireItem.objects.all()
         for question in questions:
             rating = request.POST.get(f'rating_{question.id}')
             prepod = Prepod.objects.get(id=request.POST.get('prepod_id'))

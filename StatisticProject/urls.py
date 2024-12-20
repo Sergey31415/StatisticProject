@@ -25,7 +25,7 @@ from main.views import result, questionnaire, submit_ratings, home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
-    path('/result/', result, name='result'),
+    path('result/', result, name='result'),
     path('questionnaire/', questionnaire, name='questionnaire'),
     path('questionnaire/submit_ratings', submit_ratings, name='submit_ratings'),
 ]

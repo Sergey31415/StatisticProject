@@ -11,7 +11,7 @@ class Prepod(models.Model):
     def __str__(self):
         return self.name
 
-class Questions(models.Model):
+class QuestionnaireItem(models.Model):
     title = models.CharField(max_length=150)
 
     def __str__(self):
@@ -19,7 +19,7 @@ class Questions(models.Model):
 
 class Answer(models.Model):
     prepod = models.ForeignKey(Prepod, on_delete=models.CASCADE)
-    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    question = models.ForeignKey(QuestionnaireItem, on_delete=models.CASCADE)
     answer = models.IntegerField()
 
     def __str__(self):
