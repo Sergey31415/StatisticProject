@@ -17,11 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from main.views import result, questionnaire, submit_ratings
+from django.conf import settings
+from django.conf.urls.static import static
+
+from main.views import result, questionnaire, submit_ratings, home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', result, name='result'),
+    path('', home, name='home'),
+    path('/result/', result, name='result'),
     path('questionnaire/', questionnaire, name='questionnaire'),
     path('questionnaire/submit_ratings', submit_ratings, name='submit_ratings'),
 ]
+
+# Это позволит Django обслуживать медиафайлы в процессе разработки
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -42,7 +42,8 @@ def result(request):
         avg_answer=Avg('answer'),  # Средний рейтинг для каждого вопроса
     )
 
-    prepod_name = Prepod.objects.get(id=request.GET.get('prepod')).name
+    prepod = Prepod.objects.get(id=request.GET.get('prepod'))  # Получаем объект преподавателя
+    prepod_name = prepod.name
     result = []
 
     # Выводим результат, включая количество проголосовавших
@@ -57,7 +58,13 @@ def result(request):
 
         result.append({
             "question_title": question_text,
-            "average_rating": rounded_avg_answer
+            "average_rating": rounded_avg_answer,
+            "voters_count": voters_count  # Добавляем количество проголосовавших
         })
 
-    return render(request, 'result.html', {'result': result, 'prepod_name': prepod_name, "voters_count": voters_count})
+    return render(request, 'result.html', {'result': result, 'prepod_name': prepod_name, 'prepod': prepod})
+
+
+def home(request):
+    prepods = Prepod.objects.all()
+    return render(request, 'home.html', {'prepods': prepods})
